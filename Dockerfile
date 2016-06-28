@@ -1,6 +1,8 @@
 FROM ubuntu:trusty
 ## SSH Stuff
-RUN apt-get update \
+RUN rm /bin/sh \
+  && ln -s /bin/bash /bin/sh \
+  && apt-get update \
   && apt-get install -y openssh-server acl attr python-xattr build-essential make curl \
   && mkdir /var/run/sshd \
   && (echo 'root:root' | chpasswd) \
