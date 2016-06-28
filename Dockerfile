@@ -1,7 +1,7 @@
 FROM ubuntu:trusty
 ## SSH Stuff
 RUN apt-get update \
-  && apt-get install -y openssh-server acl \
+  && apt-get install -y openssh-server acl attr python-xattr build-essential make curl \
   && mkdir /var/run/sshd \
   && (echo 'root:root' | chpasswd) \
   && sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config \
@@ -12,9 +12,8 @@ EXPOSE 22
 CMD /start.sh
 
 ## Ruby stuff
-# Yes I know this one is ancient 1.9.3, will revise later to load newer version
-RUN apt-get update \
-  && apt-get install -y ruby \
+RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 \
+  && (\curl -sSL https://get.rvm.io | bash -s stable --ruby) \
   && gem install bundler
 COPY . /tmp/deb-s3
 WORKDIR /tmp/deb-s3
