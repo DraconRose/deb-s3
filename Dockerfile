@@ -1,8 +1,6 @@
 FROM ubuntu:trusty
 ## SSH Stuff
-RUN rm /bin/sh \
-  && ln -s /bin/bash /bin/sh \
-  && apt-get update \
+RUN apt-get update \
   && apt-get install -y openssh-server acl attr python-xattr build-essential make curl \
   && mkdir /var/run/sshd \
   && (echo 'root:root' | chpasswd) \
@@ -14,12 +12,11 @@ EXPOSE 22
 CMD /start.sh
 
 ## Ruby stuff
-RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 \
+RUN /bin/bash -c "gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 \
   && (\curl -sSL https://get.rvm.io | bash -s stable --ruby --quiet-curl) \
   && source /usr/local/rvm/scripts/rvm \
-  && gem install bundler
+  && gem install bundler"
 COPY . /tmp/deb-s3
 WORKDIR /tmp/deb-s3
-RUN bundle install
+RUN /bin/bash -c "source /usr/local/rvm/scripts/rvm && bundle install"
 # ENTRYPOINT [ "bundle", "exec", "deb-s3" ]
-
