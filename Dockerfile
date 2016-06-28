@@ -12,7 +12,10 @@ EXPOSE 22
 CMD /start.sh
 
 ## Ruby stuff
-# RUN 
+# Yes I know this one is ancient 1.9.3, will revise later to load newer version
+RUN apt-get update \
+  && apt-get install -y ruby \
+  && gem install bundler
 COPY . /tmp/deb-s3
 WORKDIR /tmp/deb-s3
 RUN bundle install
